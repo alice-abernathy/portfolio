@@ -1,32 +1,30 @@
 #!/bin/bash
 
+#set the input file name
 
-# Name of the text file containing the HTML source code
-file=CSAalerts.txt
+input_file="CSAalerts.txt"
 
-html=$(cat $file)
+#define the HTML tags to search for from the downloaded data
 
+html_tags=("<h3 class=\"sc-card-title\">" "<div class=\"sc-card-publish\">" "<p class=\"sc-card-desc\">")
 
-cardtitle=$(echo "$html" | grep -o '<h3 class="sc-card-title">.*</h3>' | sed -e 's/<h3 class="sc-card-title">//g' -e 's/<\/h3>//g')
+#Loop through each line of the input file
 
-echo -e "$cardtitle"
+while read line; do
 
-carddate=$(echo "$html" | grep -o '<div class="sc-card-publish">.*</div>' | sed -e 's/<div class="sc-card-publish">//g' -e 's/<\/div>//g')
+    #Loop through each HTML tag
 
-echo -e "$carddate"
+    for tag in "${html_tags[@]}"; do
 
-carddesc=$(echo "$html" | grep -o '<p class="sc-card-desc">.*</p>' | sed -e 's/<p class="sc-card-desc">//g' -e 's/<\/p>//g')
+        #Check if the current line contains the current HTML tag
 
-echo -e "$carddesc"
+        if [[ "$line" == *"$tag"* ]]; then
 
+            #If there's a match, remove the HTML tag and print the line
 
-
-
-
-
-# Print the extracted information
-
-#echo -e "$cardtitle"
-#echo -e "$carddate"
-#echo -e "$carddesc"
-#echo -e
+            line_without_tag=$(echo "$line" | sed "s/$tag//g" | sed "s/<\/${tag:1}/\n/g" | sed "s/<[^>]*>//g")
+            echo "$line_without_tag"
+            break
+        fi
+    done
+done < "$input_file"
