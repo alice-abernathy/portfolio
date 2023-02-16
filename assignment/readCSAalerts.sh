@@ -31,7 +31,7 @@ input_file="CSAalerts.txt"
 
 html_tags=("<h3 class=\"sc-card-title\">" "<div class=\"sc-card-publish\">" "<p class=\"sc-card-desc\">")
 
-#Loop through each line of the input file
+#loop through each line of the input file
 
 echo
 echo -e "${BYLY}Below is timely information about security issues, vulnerabilities, and exploits"
@@ -40,23 +40,23 @@ echo
 
 while read line; do
 
-    #Loop through each HTML tag
+    #loop through each HTML tag
 
     for tag in "${html_tags[@]}"; do
 
-        #Check if the current line contains the current HTML tag
+        #check if the current line contains the current HTML tag
 
         if [[ "$line" == *"$tag"* ]]; then
 
-            #If there's a match, remove the HTML tag and print the line
+            #if there's a match, remove the HTML tag and store the line
 
             line_without_tag=$(echo "$line" | sed "s/$tag//g" | sed "s/<\/${tag:1}/\n/g" | sed "s/<[^>]*>//g")
-            echo -e "${YLY} $line_without_tag ${RST}"
-            echo
+            echo -e "${YLY}$line_without_tag${RST}" >> "CSAalerts_minusTAGS.txt"
+    
             break
         fi
     done
 
-
-
 done < "$input_file"
+
+cat "CSAalerts_minusTAGS.txt"
