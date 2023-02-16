@@ -1,5 +1,5 @@
 #!/bin/bash
-#V-basic
+#V-1
 
 
 #Define colors
@@ -23,33 +23,90 @@ BYLY="\033[1;33m"
 #no color
 RST="\033[0m"
 
+
+#download data from CSA website before user is presented with the main menu
+echo
+echo -e "${BLU}Welcome to the SingCERT Alerts website scraper"
+echo -e 
+echo -e "Before we begin, the scraper will scrape the website now${RST}"
+
+
+#progress bar
+
+function progress_bar {
+# Define the maximum number of iterations
+max=50
+
+# Loop over the iterations
+for i in $(seq 1 $max); do
+    #calculate the percentage of completion
+    percentage=$((i * 100 / max))
+
+    #calculate the number of characters to fill the progress bar
+    bar_length=$((i * 50 / max))
+
+    #output the progress bar
+   
+    printf "%-50s %d%%\r" "$(printf '|%.0s' $(seq 1 $bar_length))" "$percentage"
+   
+
+    #wait for a short amount of time
+    sleep 0.05
+done
+
+# Output a newline character
+echo ""
+}
+
+progress_bar #output progress bar
+
+echo
+
+./websitescraper.sh
+
 while : ; do
 
   #display the main menu and prompt the user to choose an option
   
-  echo
-  echo "Main Menu"
-  echo "Press 1 to download fresh data"
-  echo "Press 2 to do a keyword search"
-  echo "Q. Quit"
+  echo 
+  echo -e "${BYLY}$(figlet Main Menu)${RST}"
+  echo -e "${CYN}Press 1 to view the current alerts"
+  echo "Press 2 to download fresh data"
+  echo "Press 3 to do a keyword search"
+  echo "q. Quit"
   read -p "Enter an option: " input
+  echo "${RST}"
 
   #if the user presses "q", exit the script
   if [ "$input" == "q" ]; then
-    exit 0
+    echo
+    echo -e "${BLU}Disconnecting from the SingCERT website${RST}"
+    progress_bar #output progress bar
+    echo
+    exit 
   fi
 
-  #if the user chooses option 1, run the script "s1.sh" and loop back to the main menu
+#if the user chooses option 1, run the script "readCSAalerts.sh" and loop back to the main menu
   if [ "$input" == "1" ]; then
-    echo "Running s1websitescraper.sh..."
+    echo -e "Getting data..."
+    progress_bar
+    ./readCSAalerts.sh
+    echo -e "Press enter to return to the main menu"
+    read
+    continue
+  fi
+
+  #if the user chooses option 2, run the script "websitescraper.sh" and loop back to the main menu
+  if [ "$input" == "2" ]; then
+    echo "Running websitescraper.sh..."
     ./websitescraper.sh
     echo "Press enter to return to the main menu"
     read
     continue
   fi
 
-  # If the user chooses option 2, run the script "s2.sh" and loop back to the main menu
-  if [ "$input" == "2" ]; then
+  # If the user chooses option 3, run the script "keyword" and loop back to the main menu
+  if [ "$input" == "3" ]; then
     echo "Running keyword.sh..."
     ./keyword.sh
     echo "Press enter to return to the main menu"
