@@ -1,5 +1,5 @@
 #!/bin/bash
-#v2.0 
+#v3.0 
 
 #Define colors
 BLK="\033[30m"
@@ -59,4 +59,4 @@ while read line; do
 
 done < "$input_file"
 
-cat "CSAalerts_minusTAGS.txt"
+#cat "CSAalerts_minusTAGS.txt"

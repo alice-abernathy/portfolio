@@ -21,6 +21,8 @@ BYLY="\033[1;33m"
 #no color
 RST="\033[0m"
 
+#./readCSAalerts.sh
+
 #define the file to search
 
 file_to_search="CSAalerts_minusTAGS.txt"
@@ -31,15 +33,17 @@ while true; do
 
     #prompt the user to enter a keyword or phrase
 
-    echo "Enter a keyword or phrase to search for (enter q to quit): "
+    
+
+    echo -e "${BBLU}Please enter a keyword or phrase to search for (enter q to quit): ${RST}"
 
     read search_term
 
     #exit the loop if user enters 'q'
 
     if [[ "$search_term" == "q" ]]; then
-        echo "Exiting program."
-        exit 0
+        echo ""
+        break
     fi
 
     if [ -z "$search_term" ]; then

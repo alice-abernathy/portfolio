@@ -1,5 +1,5 @@
 #!/bin/bash
-#V-1
+#V-3
 
 
 #Define colors
@@ -23,6 +23,7 @@ BYLY="\033[1;33m"
 #no color
 RST="\033[0m"
 
+clear #clears screen
 
 #download data from CSA website before user is presented with the main menu
 echo
@@ -31,7 +32,7 @@ echo -e
 echo -e "Before we begin, the scraper will scrape the website now${RST}"
 
 
-#progress bar
+#define progress bar as function
 
 function progress_bar {
 # Define the maximum number of iterations
@@ -63,42 +64,57 @@ progress_bar #output progress bar
 echo
 
 ./websitescraper.sh
+./readCSAalerts.sh
 
 while : ; do
 
   #display the main menu and prompt the user to choose an option
-  
+  clear
+  sleep 0.5
   echo 
   echo -e "${BYLY}$(figlet Main Menu)${RST}"
   echo -e "${CYN}Press 1 to view the current alerts"
   echo "Press 2 to download fresh data"
   echo "Press 3 to do a keyword search"
-  echo "q. Quit"
-  read -p "Enter an option: " input
-  echo "${RST}"
+  echo -e "Or enter "${BCYN}q${RST}" ${CYN}quit...${RST}"
+  read -p "Please enter an option: " input
+  echo ""
 
   #if the user presses "q", exit the script
+
   if [ "$input" == "q" ]; then
     echo
-    echo -e "${BLU}Disconnecting from the SingCERT website${RST}"
+    echo -e "${BLU}Disconnecting from SingCERT Alerts website scraper${RST}"
+    
     progress_bar #output progress bar
+    
+    #delete both text files - start fresh when program is used again
+
+    rm CSAalerts.txt 
+    rm CSAalerts_minusTAGS.txt
+
     echo
     exit 
   fi
 
 #if the user chooses option 1, run the script "readCSAalerts.sh" and loop back to the main menu
   if [ "$input" == "1" ]; then
-    echo -e "Getting data..."
+    #rm -f CSAalerts_minusTAGS.txt
+    echo -e "${CYN}Getting data..."
     progress_bar
-    ./readCSAalerts.sh
-    echo -e "Press enter to return to the main menu"
+    #./readCSAalerts.sh
+    cat "CSAalerts_minusTAGS.txt"
+    echo ""
+    echo -e "${RST}Press enter to return to the main menu - this will clear the screen"
     read
+    #rm -f CSAalerts_minusTAGS.txt
     continue
   fi
 
   #if the user chooses option 2, run the script "websitescraper.sh" and loop back to the main menu
   if [ "$input" == "2" ]; then
-    echo "Running websitescraper.sh..."
+    echo -e "${CYN}Running websitescraper.sh...${RST}"
+    progress_bar
     ./websitescraper.sh
     echo "Press enter to return to the main menu"
     read
@@ -107,15 +123,23 @@ while : ; do
 
   # If the user chooses option 3, run the script "keyword" and loop back to the main menu
   if [ "$input" == "3" ]; then
-    echo "Running keyword.sh..."
+    echo -e "${BLU}"
+    rm -f CSAalerts_minusTAGS.txt
+    ./readCSAalerts.sh
+
+    cat "CSAalerts_minusTAGS.txt"
+
+    echo ""
     ./keyword.sh
-    echo "Press enter to return to the main menu"
+    echo -e "${RST}Press enter to return to the main menu"
     read
     continue
+    
   fi
 
   #if the user enters an invalid input, display an error message
 
-  echo "Invalid input. Please enter 1, 2, or Q."
+  sleep 1
+  echo -e "${BRED}Invalid input. Please enter 1, 2, or Q.${RST}"
 
 done
