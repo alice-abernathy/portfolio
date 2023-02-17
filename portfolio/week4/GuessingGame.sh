@@ -45,6 +45,10 @@ RST="\033[0m"
 #If the number is greater than 42, the game should print 'Too High!'
 #The game should repeat until the user has found the correct number
 
+#includes changes requested in UNit 5.3. As my script used figlet, I ran the following commands
+#sed -i '/figlet .*".*!"/ s/CORRECT/RIGHT/' GuessingGame.sh
+#sed -i '/echo .*".*!"/ s/CORRECT/RIGHT/' GuessingGame.sh
+
 #This function prints a given error 
       
 printError() 
@@ -110,5 +114,5 @@ echo -e ${RST}
 done
 
 echo -e ${BGRN}
-figlet "$secret is CORRECT" 
+figlet "$secret is RIGHT!" 
 echo -e ${RST}
