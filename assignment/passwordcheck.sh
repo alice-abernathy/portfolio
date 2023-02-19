@@ -40,7 +40,7 @@ RST="\033[0m"
 
 echo ""
 echo ""
-echo -n -e "${BBLU}Please type your password: ${RST}"
+echo -n -e "${BBLU}Please type your CURRENT password: ${RST}"
 read -s password
 
 #store entered password to input.txt
