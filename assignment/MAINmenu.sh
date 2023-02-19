@@ -135,7 +135,9 @@ while true; do
       ;;
     5|q|Q)
       echo -e "${BLU}Disconnecting from SingCERT Alerts website scraper${RST}"
-      progress_bar
+
+      ./pythonBYE.sh #uses pythong to say "BYE!"
+
       rm CSAalerts.txt 
       rm CSAalerts_minusTAGS.txt
       echo ""
