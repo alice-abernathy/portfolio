@@ -1,5 +1,5 @@
 #!/bin/bash
-#V-3
+#V-4 Cstyle loop used
 
 
 #Define colors
@@ -29,7 +29,8 @@ clear #clears screen
 
 echo
 echo -e "${BLU}Welcome to the SingCERT Alerts website scraper"
-echo ""
+
+#challenge user for their password
 
 ./passwordcheck.sh #calls password check script
 
@@ -71,8 +72,6 @@ done
 echo ""
 } #end function
 
-
-
 progress_bar #output progress bar
 
 echo
@@ -80,80 +79,72 @@ echo
 ./websitescraper.sh
 ./readCSAalerts.sh
 
-while : ; do
+clear
 
-  #display the main menu and prompt the user to choose an option
-  clear
-  sleep 0.5
-  echo 
-  echo -e "${BYLY}$(figlet Main Menu)${RST}"
-  echo -e "${CYN}Press 1 to view the current alerts"
-  echo "Press 2 to download fresh data"
-  echo "Press 3 to do a keyword search"
-  echo -e "Or enter "${BCYN}q${RST}" ${CYN}quit...${RST}"
-  read -p "Please enter an option: " input
-  echo ""
+while true; do
+  
+  choices=("View current alerts from https://www.csa.gov.sg/singcert/Alerts" "Download fresh data" "Keyword search" "Change password" "Quit")
+  echo -e "${BLU}$(figlet Main Menu)"
+  for i in "${!choices[@]}"; do
+    echo "$((i+1))) ${choices[$i]}"
+  done
+  
+  #read -p "Please enter an option: r" input
+  echo -e "${BBLU}Please enter an option: ${RST}"
+  read input
+  
+  case $input in
+    1)
+      echo -e "${BLU}Getting data...${RST}"
+      progress_bar
 
-  #if the user presses "q", exit the script
+      echo
+      echo -e "${BYLY}Below is timely information about security issues, vulnerabilities, and exploits"
+      echo -e "Provided by ${RST}${BBLU}Singapore Computer Emergency Response Team${RST}"
+      echo
 
-  if [ "$input" == "q" ]; then
-    echo
-    echo -e "${BLU}Disconnecting from SingCERT Alerts website scraper${RST}"
-    
-    progress_bar #output progress bar
-    
-    #delete both text files - start fresh when program is used again
-
-    rm CSAalerts.txt 
-    rm CSAalerts_minusTAGS.txt
-
-    echo ""
-    exit 
-  fi
-
-#if the user chooses option 1, run the script "readCSAalerts.sh" and loop back to the main menu
-  if [ "$input" == "1" ]; then
-    
-    echo -e "${CYN}Getting data..."
-    progress_bar
-    #./readCSAalerts.sh
-    cat "CSAalerts_minusTAGS.txt"
-    echo ""
-    echo -e "${RST}Press enter to return to the main menu - this will clear the screen"
-    read
-    
-    continue
-  fi
-
-  #if the user chooses option 2, run the script "websitescraper.sh" and loop back to the main menu
-  if [ "$input" == "2" ]; then
-    echo -e "${CYN}Running websitescraper.sh...${RST}"
-    progress_bar
-    ./websitescraper.sh
-    echo "Press enter to return to the main menu"
-    read
-    continue
-  fi
-
-  # If the user chooses option 3, run the script "keyword" and loop back to the main menu
-  if [ "$input" == "3" ]; then
-    echo -e "${BLU}"
-    rm -f CSAalerts_minusTAGS.txt
-    ./readCSAalerts.sh
-
-    cat "CSAalerts_minusTAGS.txt"
-
-    echo ""
-    ./keyword.sh
-    echo -e "${RST}Press enter to return to the main menu"
-    read
-    continue
-    
-  fi
-
-  #if the user enters an invalid input, display an error message
-
-  sleep 1
-  echo -e "${BRED}Invalid input. Please enter 1, 2, or Q.${RST}"
-
+      cat "CSAalerts_minusTAGS.txt"
+      echo -e "${RST}Press enter to return to the main menu - this will clear the screen"
+      read
+      clear
+      ;;
+    2)
+      echo -e "${BLU}Running websitescraper.sh...${RST}"
+      progress_bar
+      ./websitescraper.sh
+      echo "Press enter to return to the main menu"
+      read
+      clear
+      ;;
+    3)
+      echo -e "${BLU}"
+      rm -f CSAalerts_minusTAGS.txt
+      ./readCSAalerts.sh
+      cat "CSAalerts_minusTAGS.txt"
+      echo ""
+      ./keyword.sh
+      echo -e "${RST}Press enter to return to the main menu"
+      read
+      clear
+      ;;
+    4)
+      
+      ./changepassword.sh
+      sleep 1
+      clear
+      ;;
+    5|q|Q)
+      echo -e "${BLU}Disconnecting from SingCERT Alerts website scraper${RST}"
+      progress_bar
+      rm CSAalerts.txt 
+      rm CSAalerts_minusTAGS.txt
+      echo ""
+      exit 
+      ;;
+    *)
+      echo -e "${BRED}Invalid input. Please enter 1, 2, 3, 4 or Q.${RST}"
+      sleep 1
+      clear
+      ;;
+  esac
 done
