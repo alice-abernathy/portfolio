@@ -26,15 +26,27 @@ RST="\033[0m"
 clear #clears screen
 
 #download data from CSA website before user is presented with the main menu
+
 echo
 echo -e "${BLU}Welcome to the SingCERT Alerts website scraper"
+echo ""
+
+./passwordcheck.sh #calls password check script
+
+#check exit code, if "1", exit completely
+
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
 echo -e 
-echo -e "Before we begin, the scraper will scrape the website now${RST}"
+echo -e "${BLU}Before we begin, the scraper will scrape the website now${RST}"
 
 
-#define progress bar as function
+#define progress_bar as function
 
-function progress_bar {
+progress_bar ()
+{
 # Define the maximum number of iterations
 max=50
 
@@ -51,13 +63,15 @@ for i in $(seq 1 $max); do
     printf "%-50s %d%%\r" "$(printf '|%.0s' $(seq 1 $bar_length))" "$percentage"
    
 
-    #wait for a short amount of time
+    #wait for 0.05s
     sleep 0.05
 done
 
 # Output a newline character
 echo ""
-}
+} #end function
+
+
 
 progress_bar #output progress bar
 
@@ -93,13 +107,13 @@ while : ; do
     rm CSAalerts.txt 
     rm CSAalerts_minusTAGS.txt
 
-    echo
+    echo ""
     exit 
   fi
 
 #if the user chooses option 1, run the script "readCSAalerts.sh" and loop back to the main menu
   if [ "$input" == "1" ]; then
-    #rm -f CSAalerts_minusTAGS.txt
+    
     echo -e "${CYN}Getting data..."
     progress_bar
     #./readCSAalerts.sh
@@ -107,7 +121,7 @@ while : ; do
     echo ""
     echo -e "${RST}Press enter to return to the main menu - this will clear the screen"
     read
-    #rm -f CSAalerts_minusTAGS.txt
+    
     continue
   fi
 
