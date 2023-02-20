@@ -65,14 +65,14 @@ for i in $(seq 1 $max); do
    
 
     #wait for 0.05s
-    sleep 0.05
+    sleep 0.01
 done
 
 # Output a newline character
 echo ""
 } #end function
 
-progress_bar #output progress bar
+./progressbarPY.sh #output python progress bar
 
 echo
 
@@ -136,7 +136,8 @@ while true; do
     5|q|Q)
       echo -e "${BLU}Disconnecting from SingCERT Alerts website scraper${RST}"
 
-      ./pythonBYE.sh #uses pythong to say "BYE!"
+      #./pythonBYE.sh #uses pythong to say "BYE!"
+      ./progressbarPY.sh
 
       rm CSAalerts.txt 
       rm CSAalerts_minusTAGS.txt
