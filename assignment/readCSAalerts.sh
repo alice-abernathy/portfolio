@@ -1,5 +1,4 @@
 #!/bin/bash
-#v3.0 
 
 #Define colors
 BLK="\033[30m"
@@ -23,40 +22,27 @@ BMAG="\033[1;35m"
 #no color
 RST="\033[0m"
 
-#set the input file name
+#read contents of CSAalerts.txt
+data=$(cat CSAalerts.txt)
 
-input_file="CSAalerts.txt"
+#search for specified HTML tags and remove tags
+titles=$(echo "$data" | grep -Eo '<div class="m-card-article__title truncate-3-lines">.*</div>' | sed -e 's/<[^>]*>//g')
+descs=$(echo "$data" | grep -Eo '<div class="m-card-article__desc truncate-3-lines">.*</div>' | sed -e 's/<[^>]*>//g')
 
-#define the HTML tags to search for from the downloaded data
+# Write output to CSAalerts_inusTAGS.txt
+echo "$titles" > CSAalerts_minusTAGS.txt
+echo "$descs" >> CSAalerts_minusTAGS.txt
 
-html_tags=("<h3 class=\"sc-card-title\">" "<div class=\"sc-card-publish\">" "<p class=\"sc-card-desc\">")
-
-#loop through each line of the input file
-
-echo
+echo ""
 echo -e "${BYLY}Below is timely information about security issues, vulnerabilities, and exploits"
 echo -e "Provided by ${RST}${BMAG}Singapore Computer Emergency Response Team${RST}"
-echo
 
-while read line; do
+DATEtoday=$(date +%d-%m-%Y)
 
-    #loop through each HTML tag
+echo -e "${BCYN}DATE: $DATEtoday${RST}"
+echo ""
 
-    for tag in "${html_tags[@]}"; do
+output=$(cat CSAalerts_minusTAGS.txt)
 
-        #check if the current line contains the current HTML tag
-
-        if [[ "$line" == *"$tag"* ]]; then
-
-            #if there's a match, remove the HTML tag and store the line
-
-            line_without_tag=$(echo "$line" | sed "s/$tag//g" | sed "s/<\/${tag:1}/\n/g" | sed "s/<[^>]*>//g")
-            echo -e "${YLY}$line_without_tag${RST}" >> "CSAalerts_minusTAGS.txt"
-    
-            break
-        fi
-    done
-
-done < "$input_file"
-
-#cat "CSAalerts_minusTAGS.txt"
+echo -e "${YLY}$output${RST}" 
+echo ""
