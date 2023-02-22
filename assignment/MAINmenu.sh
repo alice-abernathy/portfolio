@@ -25,27 +25,6 @@ RST="\033[0m"
 
 clear #clears screen
 
-#download data from CSA website before user is presented with the main menu
-
-echo
-echo -e "${BLU}Welcome to the SingCERT Alerts website scraper"
-
-#challenge user for their password
-
-./passwordcheck.sh #calls password check script
-
-#check exit code, if "1", exit completely
-
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-echo -e 
-echo -e "${BLU}Before we begin, the scraper will scrape the website now${RST}"
-
-
-#define progress_bar as function
-
 progress_bar ()
 {
 # Define the maximum number of iterations
@@ -72,6 +51,25 @@ done
 echo ""
 } #end function
 
+#download data from CSA website before user is presented with the main menu
+
+echo
+echo -e "${BLU}Welcome to the SingCERT Alerts website scraper"
+
+#challenge user for their password
+
+./passwordcheck.sh #calls password check script
+
+#check exit code, if "1", exit completely
+
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+echo -e 
+echo -e "${BLU}Before we begin, the scraper will scrape the website now${RST}"
+
+
 ./progressbarPY.sh #output python progress bar
 
 echo
@@ -83,7 +81,7 @@ clear
 
 while true; do
   
-  choices=("View current alerts from https://www.csa.gov.sg/singcert/Alerts" "Download fresh data" "Keyword search" "Change password" "Quit")
+  choices=("View current alerts from https://www.csa.gov.sg/alert-advisories/alerts" "Download fresh data" "Keyword search" "Change password" "Quit")
   echo -e "${BLU}$(figlet Main Menu)"
   for i in "${!choices[@]}"; do
     echo "$((i+1))) ${choices[$i]}"
@@ -98,14 +96,11 @@ while true; do
       echo -e "${BLU}Getting data...${RST}"
       progress_bar
 
-      echo
-      echo -e "${BYLY}Below is timely information about security issues, vulnerabilities, and exploits"
-      echo -e "Provided by ${RST}${BBLU}Singapore Computer Emergency Response Team${RST}"
-      echo
+      ./readCSAalerts.sh 
 
-      cat "CSAalerts_minusTAGS.txt"
+      echo ""
       echo -e "${RST}Press enter to return to the main menu - this will clear the screen"
-      read
+      read -r
       clear
       ;;
     2)
@@ -118,13 +113,13 @@ while true; do
       ;;
     3)
       echo -e "${BLU}"
-      rm -f CSAalerts_minusTAGS.txt
-      ./readCSAalerts.sh
-      cat "CSAalerts_minusTAGS.txt"
+      rm -f CSAalerts_minusTAGS.txt #removes old text file to stop data being duplicated on output
+      ./readCSAalerts.sh #call the readCSAalerts.sh script
+      
       echo ""
-      ./keyword.sh
-      echo -e "${RST}Press enter to return to the main menu"
-      read
+      ./keyword.sh #call keyword.sh script
+  
+    
       clear
       ;;
     4)
