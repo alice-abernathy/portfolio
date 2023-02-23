@@ -1,7 +1,12 @@
-import itertools 
-import hashlib
+import itertools #generates permutations
+import hashlib #used to hash permutations
 
-def print_perms(chars): 
+#the minlen/maxlen are purely limit how long the script will: for testing
+
+#the function then iterates over all possible lengths of permutations between the minimum and maximum values entered by the user
+
+def print_perms():
+    chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" #defines the range of permutations
     minlen = int(input("Enter the minimum length of the permutation: "))
     maxlen = int(input("Enter the maximum length of the permutation: "))
     match_str = input("Enter the string to match against the permutations: ")
@@ -13,13 +18,15 @@ def print_perms(chars):
             break
         for i, perm in enumerate(itertools.product(chars, repeat=n), 1): 
             perm_str = ''.join(perm)
-            perm_strHASH = hashlib.sha256(perm_str.encode("utf-8")).hexdigest()
-            num_perms += 1
+            perm_strHASH = hashlib.sha256(perm_str.encode("utf-8")).hexdigest() #hashes the permutation
+            num_perms += 1 #simple counter
             if perm_strHASH == match_str:
                 found_match = True
                 break
             last_perm = perm_str
-    print("Number of permutations generated:", num_perms)
-    print("Last permutation generated:", last_perm)
+    if found_match:
+        print("Match found in permutation:", last_perm)
+    else:
+        print("Match not found in", num_perms, "permutations.")
             
-print_perms("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+print_perms()
