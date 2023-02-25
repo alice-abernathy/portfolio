@@ -22,7 +22,7 @@ BYLY="\033[1;33m"
 RST="\033[0m"
 
 
-url="https://www.csa.gov.sg/singcert/Alerts"
+url="https://www.csa.gov.sg/alerts-advisories/alerts" #CSA changed this recently!!!
 
 #use curl to retrieve the HTML content of the website and save it to a file called “CSAalerts.txt"
 #the "-s" option tells curl to run silently, without showing progress or errors
