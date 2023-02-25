@@ -1,4 +1,5 @@
 #!/bin/bash
+#the purpose of this script is to simply call the python script mentioned below
 
 #Define colors
 BLK="\033[30m"
@@ -36,6 +37,6 @@ BYLY="\033[1;33m"
 #no color
 RST="\033[0m"
 
-echo -e "${BYLY}"
+echo -e "${BYLY}" #using the echo above and below allowed the bar to have a defined color - far simpler than incorporating it in the python script
 python progressbar.py
 echo -e "${RST}"
