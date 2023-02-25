@@ -67,7 +67,7 @@ echo ""
 echo -e "${BYLY}PLEASE NOTE${RST}"
 echo -e "${YLY}Your old password will be deleted.${RST}"
 echo -e "${BBLU}Do you wish to continue? (Y/N)${RST}" 
-read confirm
+read -r confirm
 
 if [[ "$confirm" == "Y" || "$confirm" == y ]]; then
 
@@ -97,22 +97,53 @@ if [ $? -ne 0 ]; then
 fi
     
     
-    echo -e "${BBLU}Please enter your NEW password: ${RST}"
+    echo -e "${BBLU}Please enter your ${BYLY}NEW${RST} ${BBLU}password: ${RST}"
 
-        read -s password
+        read -r -s password
 
         #remove secret.txt file
 
         rm secret.txt
 
+        while true; do
+    if [[ ${#password} -lt 8 ]]; then
+        echo -e "Password should be at least ${YLY}8 characters long${RST}"
+    elif ! [[ $password =~ [A-Z] ]]; then
+        echo -e "Password should contain at least one ${YLY}uppercase letter${RST}"
+    elif ! [[ $password =~ [a-z] ]]; then
+        echo -e "Password should contain at least one ${YLY}lowercase letter${RST}"
+    elif ! [[ $password =~ [0-9] ]]; then
+        echo -e "Password should contain at least one ${YLY}number${RST}"
+    elif ! [[ $password =~ [\!\@\#\$\%\^\&\*\-] ]]; then
+        echo -e "Password should contain at least one ${YLY}special character ${BYLY}(!@#$%^&*-)${RST}"
+    else
+        break
+    fi
+
+    echo -e "${BBLU}Please enter a new password:${RST}"
+    read -r -s password
+    done
+
+    echo -e "${BGRN}Please confirm your password:${RST}"
+    read -r -s confirm_password
+
+    while [[ $password != "$confirm_password" ]]; do
+    echo -e "${BYLY}Passwords DO NOT match. Please try again.${RST}"
+    echo -e "${BBLU}Please enter a new password:${RST}"
+    read -r -s password
+    echo -e "${BGRN}Please confirm your password:${RST}"
+    read -r -s confirm_password
+done
+
+
         # save the user’s password in a file called 'secret.txt' as a hash value using sha256sum
 
-        echo $password | sha256sum > secret.txt
+        echo "$password" | sha256sum > secret.txt
         echo ""
         echo -e "${BLU}Changing your password. Please wait.${RST}"
         progress_bar
         echo 
-        echo -e "${BGRN}Your password has been reset successfully${RST}"
+        echo -e "${BGRN}Your password has been changed successfully${RST}"
         echo 
         sleep 2
 exit 0
