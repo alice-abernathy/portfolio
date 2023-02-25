@@ -1,4 +1,6 @@
 #!/bin/bash
+#the purpose of this script is to scrape the CSA website shown below
+#the command 'curl' was used as I was scraping a https website
 
 #Define colors
 BLK="\033[30m"
