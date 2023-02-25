@@ -33,8 +33,6 @@ while true; do
 
     #prompt the user to enter a keyword or phrase
 
-    
-
     echo -e "${BBLU}Please enter a keyword or phrase to search for (enter q to quit): ${RST}"
 
     read search_term
@@ -47,12 +45,21 @@ while true; do
     fi
 
     if [ -z "$search_term" ]; then
+        echo ""
         echo "Please enter a search term"  #if the user doesn't input anything and presses enter, stops the whole file being displayed.
+        echo ""
         continue
     fi
 
     #search the CSAalerts.txt and display matching lines, suppress html tags
 
-    grep -i "$search_term" "$file_to_search" #| grep -v "<.*>"
+    echo -e "${YLY}"
+    grep_output=$(grep -i "$search_term" "$file_to_search") #search for search_term and output line if serach_term is found
+    if [ -z "$grep_output" ]; then
+        echo "No results found."  #if no results found
+    else
+        echo "$grep_output"
+    fi
+    echo -e "${RST}"
 
 done
