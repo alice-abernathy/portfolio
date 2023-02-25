@@ -1,5 +1,6 @@
 #!/bin/bash
-#add in MAINmenu.sh an option to change password
+#the purpose of this script is to change the current password
+#this version includes, password complexity check and confirm password challenge
 
 #Define colors
 BLK="\033[30m"
@@ -39,10 +40,10 @@ RST="\033[0m"
 
 progress_bar ()
 {
-# Define the maximum number of iterations
+#define the maximum number of iterations
 max=50
 
-# Loop over the iterations
+#loop over the iterations
 for i in $(seq 1 $max); do
     #calculate the percentage of completion
     percentage=$((i * 100 / max))
@@ -59,7 +60,7 @@ for i in $(seq 1 $max); do
     sleep 0.05
 done
 
-# Output a newline character
+#output a newline character
 echo ""
 } #end function
 
@@ -99,39 +100,41 @@ fi
     
     echo -e "${BBLU}Please enter your ${BYLY}NEW${RST} ${BBLU}password: ${RST}"
 
-        read -r -s password
+        read -r -s password #supresses password, read -s used through this script
 
-        #remove secret.txt file
+        #remove secret.txt file, old password removed
 
         rm secret.txt
 
+    #password complexity challenges, uses '=~' which is a 'regular expression match operator'. Tests if left side matches right side, returns 0 or 1
+
         while true; do
-    if [[ ${#password} -lt 8 ]]; then
+    if [[ ${#password} -lt 8 ]]; then #checks if password '-lt 8' characters
         echo -e "Password should be at least ${YLY}8 characters long${RST}"
-    elif ! [[ $password =~ [A-Z] ]]; then
+    elif ! [[ $password =~ [A-Z] ]]; then #checks for a capital letter
         echo -e "Password should contain at least one ${YLY}uppercase letter${RST}"
-    elif ! [[ $password =~ [a-z] ]]; then
+    elif ! [[ $password =~ [a-z] ]]; then #checks for lower case letter
         echo -e "Password should contain at least one ${YLY}lowercase letter${RST}"
-    elif ! [[ $password =~ [0-9] ]]; then
+    elif ! [[ $password =~ [0-9] ]]; then #checks for a number
         echo -e "Password should contain at least one ${YLY}number${RST}"
-    elif ! [[ $password =~ [\!\@\#\$\%\^\&\*\-] ]]; then
-        echo -e "Password should contain at least one ${YLY}special character ${BYLY}(!@#$%^&*-)${RST}"
+    elif ! [[ $password =~ [\!\@\#\$\%\^\&\*\-] ]]; then #additional special characters can be added here within [[[..\specialCHAR\...]]]
+        echo -e "Password should contain at least one ${YLY}special character ${BYLY}(!@#$%^&*-)${RST}" #allows user to see what are accepted special characters
     else
         break
     fi
 
-    echo -e "${BBLU}Please enter a new password:${RST}"
+    echo -e "${BBLU}Please enter your ${BYLY}NEW${RST} ${BBLU}password:${RST}"
     read -r -s password
     done
 
-    echo -e "${BGRN}Please confirm your password:${RST}"
+    echo -e "${BGRN}Please confirm your ${BYLY}NEW${RST} ${BBLU}password:${RST}"
     read -r -s confirm_password
 
     while [[ $password != "$confirm_password" ]]; do
     echo -e "${BYLY}Passwords DO NOT match. Please try again.${RST}"
-    echo -e "${BBLU}Please enter a new password:${RST}"
+    echo -e "${BBLU}Please enter your ${BYLY}NEW${RST} ${BBLU}password:${RST}"
     read -r -s password
-    echo -e "${BGRN}Please confirm your password:${RST}"
+    echo -e "${BGRN}Please confirm your ${BYLY}NEW${RST} ${BBLU}password:${RST}"
     read -r -s confirm_password
 done
 
@@ -145,5 +148,5 @@ done
         echo 
         echo -e "${BGRN}Your password has been changed successfully${RST}"
         echo 
-        sleep 2
+        sleep 2 #allows user to see that their password has changed before clearing the screen
 exit 0
