@@ -20,17 +20,32 @@ GRY="\033[37m"
 YLY="\033[0;33m"
 BYLY="\033[1;33m"
 
+#define colors differently when the escape codes don't work as in 'choices'
+
+red=$(tput setaf 1)
+green=$(tput setaf 2)
+yellow=$(tput setaf 3)
+blue=$(tput setaf 4)
+purple=$(tput setaf 5)
+cyan=$(tput setaf 6)
+orange=$(tput setaf 202)
+pink=$(tput setaf 213)
+brightred=$(tput setaf 196)
+
+reset=$(tput sgr0)
+
+
 #no color
 RST="\033[0m"
 
 clear #clears screen
 
-progress_bar ()
+progress_bar ()  ###draws a progress bar across the screen
 {
 # Define the maximum number of iterations
 max=50
 
-# Loop over the iterations
+#loop over the iterations
 for i in $(seq 1 $max); do
     #calculate the percentage of completion
     percentage=$((i * 100 / max))
@@ -47,14 +62,14 @@ for i in $(seq 1 $max); do
     sleep 0.01
 done
 
-# Output a newline character
+#output a newline character
 echo ""
-} #end function
+} ###end function
 
 #download data from CSA website before user is presented with the main menu
 
 echo
-echo -e "${BLU}Welcome to the SingCERT Alerts website scraper"
+echo -e "${BLU}Welcome to the SingCERT Alerts website scraper${RST}"
 
 #challenge user for their password
 
@@ -66,23 +81,29 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo -e 
+echo ""
 echo -e "${BLU}Before we begin, the scraper will scrape the website now${RST}"
-
+echo ""
 
 ./progressbarPY.sh #output python progress bar
 
-echo
-
-./websitescraper.sh
-./readCSAalerts.sh
+./websitescraper.sh #calls websitescraper.sh to download the data
+./readCSAalerts.sh > /dev/null #calls readCSAalerts.sh but suppresses the output
 
 clear
 
 while true; do
-  
-  choices=("View current alerts from https://www.csa.gov.sg/alert-advisories/alerts" "Download fresh data" "Keyword search" "Change password" "Quit")
-  echo -e "${BLU}$(figlet Main Menu)"
+
+  choices=(
+            "${blue}View current alerts from ${reset}${yellow}https://www.csa.gov.sg/alerts-advisories/alerts${reset}" 
+            "${blue}Download ${green}fresh data${reset}" 
+            "${orange}Keyword${blue} search${reset}" 
+            "${pink}Change password${reset}" 
+            "${green}Quit${reset}"
+          )
+
+
+  echo -e "${BLU}$(figlet Main Menu)${RST}"
   for i in "${!choices[@]}"; do
     echo "$((i+1))) ${choices[$i]}"
   done
