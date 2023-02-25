@@ -1,4 +1,6 @@
 #!/bin/bash
+#the purpose of this script is to perform a keyword search on CSAalerts_minusTAGS.txt
+
 
 #Define colors
 BLK="\033[30m"
@@ -35,16 +37,16 @@ while true; do
 
     echo -e "${BBLU}Please enter a keyword or phrase to search for (enter q to quit): ${RST}"
 
-    read search_term
+    read -r search_term
 
     #exit the loop if user enters 'q'
 
-    if [[ "$search_term" == "q" ]]; then
+    if [[ "$search_term" == "q" ]]; then #allows user to quit by entering 'q'
         echo ""
         break
     fi
 
-    if [ -z "$search_term" ]; then
+    if [ -z "$search_term" ]; then #error handling
         echo ""
         echo "Please enter a search term"  #if the user doesn't input anything and presses enter, stops the whole file being displayed.
         echo ""
@@ -54,7 +56,7 @@ while true; do
     #search the CSAalerts.txt and display matching lines, suppress html tags
 
     echo -e "${YLY}"
-    grep_output=$(grep -i "$search_term" "$file_to_search") #search for search_term and output line if serach_term is found
+    grep_output=$(grep -i "$search_term" "$file_to_search") #search for search_term and output line 'grep i' if search_term is found
     if [ -z "$grep_output" ]; then
         echo "No results found."  #if no results found
     else
