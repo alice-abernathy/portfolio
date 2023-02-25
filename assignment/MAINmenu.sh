@@ -1,5 +1,6 @@
 #!/bin/bash
-#V-4 Cstyle loop used
+#the purpose of this script forms the Main Menu of Assignment 4
+#earlier versions had a 'if/elif/else' loop but as the menu options increased, it was simpler to write a C style loop
 
 
 #Define colors
@@ -38,11 +39,11 @@ reset=$(tput sgr0)
 #no color
 RST="\033[0m"
 
-clear #clears screen
+clear #clears screen to tidy up output
 
-progress_bar ()  ###draws a progress bar across the screen
+progress_bar ()  ###function: draws a progress bar across the screen
 {
-# Define the maximum number of iterations
+#define the maximum number of iterations
 max=50
 
 #loop over the iterations
@@ -53,20 +54,21 @@ for i in $(seq 1 $max); do
     #calculate the number of characters to fill the progress bar
     bar_length=$((i * 50 / max))
 
-    #output the progress bar
-   
+    ###output the progress bar
+    #%-50s %d%%\ > format string formatting output - left-aligned, 50 chars wide
+    #\r > move cursor to beginning of line, line updates in place
+    #$(printf '|%.0s' $(seq 1 $progressBAR)) generates '|' to form the bar
+    # '|%.0s' always print '|'
     printf "%-50s %d%%\r" "$(printf '|%.0s' $(seq 1 $bar_length))" "$percentage"
    
 
-    #wait for 0.05s
+    #wait for 0.01s
     sleep 0.01
 done
 
 #output a newline character
 echo ""
 } ###end function
-
-#download data from CSA website before user is presented with the main menu
 
 echo
 echo -e "${BLU}Welcome to the SingCERT Alerts website scraper${RST}"
@@ -77,7 +79,7 @@ echo -e "${BLU}Welcome to the SingCERT Alerts website scraper${RST}"
 
 #check exit code, if "1", exit completely
 
-if [ $? -ne 0 ]; then
+if [ $? -ne 0 ]; then  #visual studio didn't like me using $?,why?
   exit 1
 fi
 
@@ -87,13 +89,16 @@ echo ""
 
 ./progressbarPY.sh #output python progress bar
 
+#download data from CSA website before user is presented with the main menu
+
 ./websitescraper.sh #calls websitescraper.sh to download the data
-./readCSAalerts.sh > /dev/null #calls readCSAalerts.sh but suppresses the output
+./readCSAalerts.sh > /dev/null #calls readCSAalerts.sh but suppresses the output by sending it to /dev/null
 
 clear
 
 while true; do
 
+  #choices defines MAIN MENU choices
   choices=(
             "${blue}View current alerts from ${reset}${yellow}https://www.csa.gov.sg/alerts-advisories/alerts${reset}" 
             "${blue}Download ${green}fresh data${reset}" 
@@ -103,21 +108,22 @@ while true; do
           )
 
 
-  echo -e "${BLU}$(figlet Main Menu)${RST}"
-  for i in "${!choices[@]}"; do
-    echo "$((i+1))) ${choices[$i]}"
+  echo -e "${BLU}$(figlet Main Menu)${RST}" #banners MAIN MENU
+
+  for i in "${!choices[@]}"; do     #the 'for' loop that iterates over the above 'choices'
+    echo "$((i+1))) ${choices[$i]}" #'$(i+1)))' places a number in front of the option, '${choices[$i]}' outputs the choice
   done
   
   #read -p "Please enter an option: r" input
   echo -e "${BBLU}Please enter an option: ${RST}"
-  read input
+  read -r input
   
   case $input in
     1)
-      echo -e "${BLU}Getting data...${RST}"
-      progress_bar
+      echo -e "${BLU}Getting data...${RST}" #choice 1
+      progress_bar #calls the progress_bar function
 
-      ./readCSAalerts.sh 
+      ./readCSAalerts.sh #calls ./readCSAalerts.sh to output the current alerts which has been scraped
 
       echo ""
       echo -e "${RST}Press enter to return to the main menu - this will clear the screen"
@@ -125,17 +131,18 @@ while true; do
       clear
       ;;
     2)
-      echo -e "${BLU}Running websitescraper.sh...${RST}"
-      progress_bar
-      ./websitescraper.sh
+      echo -e "${BLU}Running websitescraper.sh...${RST}" #choice 2
+      progress_bar #calls the progress_bar function
+
+      ./websitescraper.sh #
       echo "Press enter to return to the main menu"
-      read
+      read -r
       clear
       ;;
     3)
-      echo -e "${BLU}"
-      rm -f CSAalerts_minusTAGS.txt #removes old text file to stop data being duplicated on output
-      ./readCSAalerts.sh #call the readCSAalerts.sh script
+      echo -e "${BLU}" #choice 3
+      rm -f CSAalerts_minusTAGS.txt #removes old text file to stop data being duplicated inside the text file on output
+      ./readCSAalerts.sh #call the readCSAalerts.sh script to regenerate the text file CSAalerts_minusTAGS.txt
       
       echo ""
       ./keyword.sh #call keyword.sh script
@@ -146,22 +153,26 @@ while true; do
     4)
       
       ./changepassword.sh
+
       sleep 1
       clear
       ;;
-    5|q|Q)
+    5|q|Q) #the user can choose '5', 'q' or 'Q' to quit
+
       echo -e "${BLU}Disconnecting from SingCERT Alerts website scraper${RST}"
 
-      #./pythonBYE.sh #uses pythong to say "BYE!"
+      #uses python progress bar on exit
       ./progressbarPY.sh
 
+      #removes text files to stop text duplicating everytime you use ./MAINmenu.sh
       rm CSAalerts.txt 
       rm CSAalerts_minusTAGS.txt
+
       echo ""
       exit 
       ;;
     *)
-      echo -e "${BRED}Invalid input. Please enter 1, 2, 3, 4 or Q.${RST}"
+      echo -e "${BRED}Invalid input. Please enter 1, 2, 3, 4 or Q.${RST}" #error handling if something other than the displayed choices is entered
       sleep 1
       clear
       ;;
