@@ -1,5 +1,8 @@
 #!/bin/bash
-#check password
+#the purpose of this script is to check the entered password is correct
+#it does this taking the input and then hashing it > input.txt
+#it then compares the stored hashed password in secret.txt
+#it then deletes input.txt regardless of correct or incorrect password attempt, mainly for error handling
 
 #Define colors
 BLK="\033[30m"
