@@ -1,4 +1,5 @@
 #!/bin/bash
+#the purpose of this script is to take the scraped data and search for predefined html tags, then outputs to CSAalerts_minusTAGS.txt
 
 #Define colors
 BLK="\033[30m"
@@ -25,11 +26,12 @@ RST="\033[0m"
 #read contents of CSAalerts.txt
 data=$(cat CSAalerts.txt)
 
-#search for specified HTML tags and remove tags
+#search for specified HTML tags and remove tags using sed command
+#the CSA like changing these html tags!
 titles=$(echo "$data" | grep -Eo '<div class="m-card-article__title truncate-3-lines">.*</div>' | sed -e 's/<[^>]*>//g')
 descs=$(echo "$data" | grep -Eo '<div class="m-card-article__desc truncate-3-lines">.*</div>' | sed -e 's/<[^>]*>//g')
 
-# Write output to CSAalerts_inusTAGS.txt
+# Write output to CSAalerts_minusTAGS.txt
 echo "$titles" > CSAalerts_minusTAGS.txt
 echo "$descs" >> CSAalerts_minusTAGS.txt
 
@@ -39,10 +41,10 @@ echo -e "Provided by ${RST}${BMAG}Singapore Computer Emergency Response Team${RS
 
 DATEtoday=$(date +%d-%m-%Y)
 
-echo -e "${BCYN}DATE: $DATEtoday${RST}"
+echo -e "${BCYN}DATE: $DATEtoday${RST}" #outputs today's date
 echo ""
 
 output=$(cat CSAalerts_minusTAGS.txt)
 
-echo -e "${YLY}$output${RST}" 
+echo -e "${YLY}$output${RST}" #outputs in yellow
 echo ""
